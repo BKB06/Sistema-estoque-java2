@@ -150,34 +150,27 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-       // --- PASSO 1: VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS ---
+
         if (txtNome.getText().trim().isEmpty() || txtQuantidade.getText().trim().isEmpty() || txtPreco.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios (Nome, Quantidade, Preço).", "Atenção", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
         try {
-            // --- PASSO 2: VALIDAÇÃO DE VALORES NUMÉRICOS ---
-
             int quantidade = Integer.parseInt(txtQuantidade.getText());
             if (quantidade < 0) {
                 JOptionPane.showMessageDialog(this, "A quantidade não pode ser um número negativo.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
             BigDecimal preco = new BigDecimal(txtPreco.getText().replace(",", "."));
             if (preco.compareTo(BigDecimal.ZERO) < 0) {
                 JOptionPane.showMessageDialog(this, "O preço não pode ser um número negativo.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
-            // --- PASSO 3: CRIAR E SALVAR O OBJETO ---
             Produto produto = new Produto();
             produto.setNome(txtNome.getText());
             produto.setDescricao(txtDescricao.getText());
             produto.setQuantidade(quantidade);
             produto.setPreco(preco);
-
             if (produtoParaEditar == null) {
                 produtoDAO.inserir(produto);
                 JOptionPane.showMessageDialog(this, "Produto adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -186,9 +179,7 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
                 produtoDAO.atualizar(produto);
                 JOptionPane.showMessageDialog(this, "Produto atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             }
-
             this.dispose();
-
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Por favor, insira valores numéricos válidos para Quantidade e Preço.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
         }

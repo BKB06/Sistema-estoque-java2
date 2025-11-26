@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package sistemaestoque;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -106,12 +103,7 @@ public class ProdutoDAO {
             JOptionPane.showMessageDialog(null, "Erro ao excluir produto: " + e.getMessage(), "Erro no DAO", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    /**
-     * Busca produtos no banco de dados cujo nome contenha o texto fornecido.
-     * @param nome O texto a ser pesquisado no nome dos produtos.
-     * @return Uma lista de produtos que correspondem ao critério de busca.
-     */
+
     public List<Produto> buscarPorNome(String nome) {
         List<Produto> produtosEncontrados = new ArrayList<>();
         String sql = "SELECT * FROM produtos WHERE nome LIKE ?";

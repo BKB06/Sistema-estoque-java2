@@ -256,36 +256,36 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMostrarTodosActionPerformed
 
     private void btnGerarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarPDFActionPerformed
-        String nomeArquivo = "relatorio_estoque.pdf";
-        Document documento = new Document(PageSize.A4);
-        try {
-            PdfWriter.getInstance(documento, new FileOutputStream(nomeArquivo));
-            documento.open();
-            Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-            Paragraph titulo = new Paragraph("Relatório de Estoque", fonteTitulo);
-            titulo.setAlignment(Element.ALIGN_CENTER);
-            documento.add(titulo);
-            documento.add(new Paragraph(" "));
-            List<Produto> produtos = produtoDAO.listar();
-            PdfPTable tabela = new PdfPTable(5);
-            tabela.setWidthPercentage(100);
-            Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
-            tabela.addCell(new PdfPCell(new Phrase("ID", fonteCabecalho)));
-            tabela.addCell(new PdfPCell(new Phrase("Nome", fonteCabecalho)));
-            tabela.addCell(new PdfPCell(new Phrase("Descrição", fonteCabecalho)));
-            tabela.addCell(new PdfPCell(new Phrase("Qtd", fonteCabecalho)));
-            tabela.addCell(new PdfPCell(new Phrase("Preço (R$)", fonteCabecalho)));
-            for (Produto p : produtos) {
-                tabela.addCell(String.valueOf(p.getId()));
-                tabela.addCell(p.getNome());
-                tabela.addCell(p.getDescricao());
-                tabela.addCell(String.valueOf(p.getQuantidade()));
-                tabela.addCell(p.getPreco().toPlainString());
-            }
-            documento.add(tabela);
-            JOptionPane.showMessageDialog(this, "Relatório PDF gerado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            try { Desktop.getDesktop().open(new File(nomeArquivo)); }
-            catch (IOException e) { JOptionPane.showMessageDialog(this, "Não foi possível abrir o PDF automaticamente, mas ele foi salvo na pasta do projeto.", "Aviso", JOptionPane.WARNING_MESSAGE); }
+    String nomeArquivo = "relatorio_estoque.pdf";
+    Document documento = new Document(PageSize.A4);
+    try {
+        PdfWriter.getInstance(documento, new FileOutputStream(nomeArquivo));
+        documento.open();
+        Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+        Paragraph titulo = new Paragraph("Relatório de Estoque", fonteTitulo);
+        titulo.setAlignment(Element.ALIGN_CENTER);
+        documento.add(titulo);
+        documento.add(new Paragraph(" "));
+        List<Produto> produtos = produtoDAO.listar();
+        PdfPTable tabela = new PdfPTable(5);
+        tabela.setWidthPercentage(100);
+        Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+        tabela.addCell(new PdfPCell(new Phrase("ID", fonteCabecalho)));
+        tabela.addCell(new PdfPCell(new Phrase("Nome", fonteCabecalho)));
+        tabela.addCell(new PdfPCell(new Phrase("Descrição", fonteCabecalho)));
+        tabela.addCell(new PdfPCell(new Phrase("Qtd", fonteCabecalho)));
+        tabela.addCell(new PdfPCell(new Phrase("Preço (R$)", fonteCabecalho)));
+        for (Produto p : produtos) {
+            tabela.addCell(String.valueOf(p.getId()));
+            tabela.addCell(p.getNome());
+            tabela.addCell(p.getDescricao());
+            tabela.addCell(String.valueOf(p.getQuantidade()));
+            tabela.addCell(p.getPreco().toPlainString());
+        }
+        documento.add(tabela);
+        JOptionPane.showMessageDialog(this, "Relatório PDF gerado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        try { Desktop.getDesktop().open(new File(nomeArquivo)); }
+        catch (IOException e) { JOptionPane.showMessageDialog(this, "Não foi possível abrir o PDF automaticamente.", "Aviso", JOptionPane.WARNING_MESSAGE); }
         } catch (DocumentException | FileNotFoundException e) {
             JOptionPane.showMessageDialog(this, "Erro ao gerar o PDF: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } finally {
@@ -293,9 +293,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnGerarPDFActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public void preencherTabela() {
         DefaultTableModel modelo = (DefaultTableModel) jTable2.getModel();
         modelo.setNumRows(0);
