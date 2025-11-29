@@ -52,6 +52,7 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
         txtDescricao.setText(produtoParaEditar.getDescricao());
         txtQuantidade.setText(String.valueOf(produtoParaEditar.getQuantidade()));
         txtPreco.setText(produtoParaEditar.getPreco().toPlainString());
+        txtFornecedor.setText(produtoParaEditar.getFornecedor());
     }
 
     /**
@@ -73,6 +74,8 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
         txtQuantidade = new javax.swing.JTextField();
         txtPreco = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        txtFornecedor = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -91,24 +94,35 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
             }
         });
 
+        jLabel5.setText("Fornecedor:");
+
+        txtFornecedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFornecedorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtNome)
                     .addComponent(txtDescricao)
                     .addComponent(txtPreco)
-                    .addComponent(txtQuantidade))
+                    .addComponent(txtQuantidade)
+                    .addComponent(txtFornecedor))
                 .addContainerGap(232, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -131,8 +145,12 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
                     .addComponent(jLabel4)
                     .addComponent(txtPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSalvar)
-                .addContainerGap(159, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -150,40 +168,56 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        // Validação básica
+    if (txtNome.getText().isEmpty() || txtPreco.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Preencha os campos obrigatórios.");
+        return;
+    }
 
-        if (txtNome.getText().trim().isEmpty() || txtQuantidade.getText().trim().isEmpty() || txtPreco.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios (Nome, Quantidade, Preço).", "Atenção", JOptionPane.WARNING_MESSAGE);
-            return;
+    try {
+        int novaQuantidade = Integer.parseInt(txtQuantidade.getText());
+        BigDecimal preco = new BigDecimal(txtPreco.getText().replace(",", "."));
+        
+        Produto produto = new Produto();
+        produto.setNome(txtNome.getText());
+        produto.setDescricao(txtDescricao.getText());
+        produto.setQuantidade(novaQuantidade);
+        produto.setPreco(preco);
+        produto.setFornecedor(txtFornecedor.getText()); // <--- Pega do novo campo
+
+        if (produtoParaEditar == null) {
+            // --- MODO INSERIR ---
+            produtoDAO.inserir(produto); // O DAO já registra a movimentação de entrada
+            JOptionPane.showMessageDialog(this, "Produto cadastrado!");
+        } else {
+            // --- MODO EDITAR ---
+            produto.setId(produtoParaEditar.getId());
+            
+            // Lógica Inteligente de Movimentação
+            int qtdAntiga = produtoParaEditar.getQuantidade();
+            int diferenca = novaQuantidade - qtdAntiga;
+
+            if (diferenca > 0) {
+                // Se a quantidade aumentou, é ENTRADA
+                new MovimentacaoDAO().registrarMovimentacao(produto.getId(), "ENTRADA", diferenca);
+            } else if (diferenca < 0) {
+                // Se a quantidade diminuiu, é SAÍDA (multiplica por -1 para salvar positivo)
+                new MovimentacaoDAO().registrarMovimentacao(produto.getId(), "SAIDA", diferenca * -1);
+            }
+            
+            produtoDAO.atualizar(produto);
+            JOptionPane.showMessageDialog(this, "Produto atualizado!");
         }
-        try {
-            int quantidade = Integer.parseInt(txtQuantidade.getText());
-            if (quantidade < 0) {
-                JOptionPane.showMessageDialog(this, "A quantidade não pode ser um número negativo.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            BigDecimal preco = new BigDecimal(txtPreco.getText().replace(",", "."));
-            if (preco.compareTo(BigDecimal.ZERO) < 0) {
-                JOptionPane.showMessageDialog(this, "O preço não pode ser um número negativo.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            Produto produto = new Produto();
-            produto.setNome(txtNome.getText());
-            produto.setDescricao(txtDescricao.getText());
-            produto.setQuantidade(quantidade);
-            produto.setPreco(preco);
-            if (produtoParaEditar == null) {
-                produtoDAO.inserir(produto);
-                JOptionPane.showMessageDialog(this, "Produto adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                produto.setId(produtoParaEditar.getId());
-                produtoDAO.atualizar(produto);
-                JOptionPane.showMessageDialog(this, "Produto atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            }
-            this.dispose();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Por favor, insira valores numéricos válidos para Quantidade e Preço.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
-        }
+        this.dispose();
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Erro nos dados: " + e.getMessage());
+    }
     }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void txtFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFornecedorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFornecedorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -223,8 +257,10 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField txtDescricao;
+    private javax.swing.JTextField txtFornecedor;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtPreco;
     private javax.swing.JTextField txtQuantidade;

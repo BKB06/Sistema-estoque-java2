@@ -15,7 +15,7 @@ public class Produto {
     private String descricao;
     private int quantidade;
     private BigDecimal preco; // Usamos BigDecimal para precisão monetária
-
+    private String fornecedor;
     
     // --- Getters e Setters ---
     // Métodos para obter (get) e definir (set) os valores dos atributos.
@@ -59,4 +59,11 @@ public class Produto {
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
+    public String getFornecedor() {
+    return fornecedor;
+}
+
+public void setFornecedor(String fornecedor) {
+    this.fornecedor = fornecedor;
+}
 }

@@ -24,7 +24,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jScrollPane2" min="-2" pref="402" max="-2" attributes="0"/>
+              <Component id="jScrollPane2" min="-2" pref="414" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
@@ -35,18 +35,23 @@
                       <Component id="jBexcluir" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jBSair" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                              <Component id="btnGerarPDF" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnMostrarTodos" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtBusca" min="-2" pref="99" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace pref="7" max="32767" attributes="0"/>
                       <Component id="btnBuscar" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="btnMostrarTodos" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnGerarPDF" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="19" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -56,10 +61,10 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jBadd" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jBeditar" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jBexcluir" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jBSair" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jBadd" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jBeditar" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jBexcluir" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jBSair" alignment="1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -84,12 +89,13 @@
         <Component class="javax.swing.JTable" name="jTable2">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="5" rowCount="4">
+              <Table columnCount="6" rowCount="4">
                 <Column editable="true" title="ID" type="java.lang.Integer"/>
                 <Column editable="true" title="NOME" type="java.lang.String"/>
                 <Column editable="true" title="Descri&#xe7;&#xe3;o" type="java.lang.String"/>
                 <Column editable="true" title="Qtd" type="java.lang.Integer"/>
                 <Column editable="true" title="Pre&#xe7;o" type="java.lang.Double"/>
+                <Column editable="true" title="Fornecedor" type="java.lang.String"/>
               </Table>
             </Property>
           </Properties>
@@ -146,6 +152,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtBusca">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtBuscaActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnBuscar">
       <Properties>

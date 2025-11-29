@@ -71,17 +71,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "NOME", "Descrição", "Qtd", "Preço"
+                "ID", "NOME", "Descrição", "Qtd", "Preço", "Fornecedor"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -124,6 +124,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jLabel1.setText("Pesquisar por Nome:");
 
+        txtBusca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscaActionPerformed(evt);
+            }
+        });
+
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,7 +157,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -161,16 +167,19 @@ public class TelaPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBexcluir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBSair))
+                        .addComponent(jBSair)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btnGerarPDF)
+                                .addComponent(btnMostrarTodos)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBuscar))
-                    .addComponent(btnMostrarTodos)
-                    .addComponent(btnGerarPDF))
-                .addContainerGap(19, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                        .addComponent(btnBuscar)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,7 +254,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         modelo.setNumRows(0);
         for (Produto p : resultados) {
             modelo.addRow(new Object[]{
-                p.getId(), p.getNome(), p.getDescricao(), p.getQuantidade(), p.getPreco()
+                p.getId(), p.getNome(), p.getDescricao(), p.getQuantidade(), p.getPreco(), p.getFornecedor()
             });
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
@@ -256,42 +265,105 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMostrarTodosActionPerformed
 
     private void btnGerarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarPDFActionPerformed
-    String nomeArquivo = "relatorio_estoque.pdf";
-    Document documento = new Document(PageSize.A4);
-    try {
-        PdfWriter.getInstance(documento, new FileOutputStream(nomeArquivo));
-        documento.open();
-        Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-        Paragraph titulo = new Paragraph("Relatório de Estoque", fonteTitulo);
-        titulo.setAlignment(Element.ALIGN_CENTER);
-        documento.add(titulo);
-        documento.add(new Paragraph(" "));
-        List<Produto> produtos = produtoDAO.listar();
-        PdfPTable tabela = new PdfPTable(5);
-        tabela.setWidthPercentage(100);
-        Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
-        tabela.addCell(new PdfPCell(new Phrase("ID", fonteCabecalho)));
-        tabela.addCell(new PdfPCell(new Phrase("Nome", fonteCabecalho)));
-        tabela.addCell(new PdfPCell(new Phrase("Descrição", fonteCabecalho)));
-        tabela.addCell(new PdfPCell(new Phrase("Qtd", fonteCabecalho)));
-        tabela.addCell(new PdfPCell(new Phrase("Preço (R$)", fonteCabecalho)));
-        for (Produto p : produtos) {
-            tabela.addCell(String.valueOf(p.getId()));
-            tabela.addCell(p.getNome());
-            tabela.addCell(p.getDescricao());
-            tabela.addCell(String.valueOf(p.getQuantidade()));
-            tabela.addCell(p.getPreco().toPlainString());
-        }
-        documento.add(tabela);
-        JOptionPane.showMessageDialog(this, "Relatório PDF gerado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        try { Desktop.getDesktop().open(new File(nomeArquivo)); }
-        catch (IOException e) { JOptionPane.showMessageDialog(this, "Não foi possível abrir o PDF automaticamente.", "Aviso", JOptionPane.WARNING_MESSAGE); }
+       String nomeArquivo = "relatorio_estoque_completo.pdf";
+        Document documento = new Document(PageSize.A4);
+        
+        try {
+            PdfWriter.getInstance(documento, new FileOutputStream(nomeArquivo));
+            documento.open();
+            
+            // --- PARTE 1: TÍTULO GERAL ---
+            Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+            Font fonteSubtitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
+            Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            
+            Paragraph titulo = new Paragraph("Relatório Geral de Estoque", fonteTitulo);
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            documento.add(titulo);
+            documento.add(new Paragraph(" ")); // Espaço em branco
+            
+            // ==========================================
+            // --- PARTE 2: TABELA DE PRODUTOS ATUAIS ---
+            // ==========================================
+            documento.add(new Paragraph("Posição Atual do Estoque", fonteSubtitulo));
+            documento.add(new Paragraph(" ")); // Espaço
+            
+            PdfPTable tabelaProdutos = new PdfPTable(6); // 6 Colunas
+            tabelaProdutos.setWidthPercentage(100);
+            
+            // Cabeçalho Produtos
+            tabelaProdutos.addCell(new PdfPCell(new Phrase("ID", fonteCabecalho)));
+            tabelaProdutos.addCell(new PdfPCell(new Phrase("Nome", fonteCabecalho)));
+            tabelaProdutos.addCell(new PdfPCell(new Phrase("Descrição", fonteCabecalho)));
+            tabelaProdutos.addCell(new PdfPCell(new Phrase("Qtd", fonteCabecalho)));
+            tabelaProdutos.addCell(new PdfPCell(new Phrase("Preço", fonteCabecalho)));
+            tabelaProdutos.addCell(new PdfPCell(new Phrase("Fornecedor", fonteCabecalho)));
+            
+            // Dados Produtos
+            List<Produto> listaProdutos = produtoDAO.listar();
+            for (Produto p : listaProdutos) {
+                tabelaProdutos.addCell(String.valueOf(p.getId()));
+                tabelaProdutos.addCell(p.getNome());
+                tabelaProdutos.addCell(p.getDescricao());
+                tabelaProdutos.addCell(String.valueOf(p.getQuantidade()));
+                tabelaProdutos.addCell(p.getPreco().toPlainString());
+                tabelaProdutos.addCell(p.getFornecedor() != null ? p.getFornecedor() : "");
+            }
+            documento.add(tabelaProdutos);
+            
+            // Espaço grande entre as tabelas
+            documento.add(new Paragraph(" ")); 
+            documento.add(new Paragraph(" ")); 
+            
+            // ==========================================
+            // --- PARTE 3: TABELA DE MOVIMENTAÇÕES ---
+            // ==========================================
+            documento.add(new Paragraph("Histórico de Entradas e Saídas", fonteSubtitulo));
+            documento.add(new Paragraph(" ")); // Espaço
+            
+            PdfPTable tabelaMov = new PdfPTable(4); // 4 Colunas (Produto, Tipo, Qtd, Data)
+            tabelaMov.setWidthPercentage(100);
+            
+            // Cabeçalho Movimentações
+            tabelaMov.addCell(new PdfPCell(new Phrase("Produto", fonteCabecalho)));
+            tabelaMov.addCell(new PdfPCell(new Phrase("Tipo", fonteCabecalho)));
+            tabelaMov.addCell(new PdfPCell(new Phrase("Qtd", fonteCabecalho)));
+            tabelaMov.addCell(new PdfPCell(new Phrase("Data/Hora", fonteCabecalho)));
+            
+            // Dados Movimentações (Buscando do novo DAO)
+            MovimentacaoDAO movDAO = new MovimentacaoDAO();
+            List<String[]> listaMov = movDAO.listarParaRelatorio();
+            
+            for (String[] mov : listaMov) {
+                tabelaMov.addCell(mov[0]); // Nome do Produto
+                tabelaMov.addCell(mov[1]); // Tipo (ENTRADA/SAIDA)
+                tabelaMov.addCell(mov[2]); // Quantidade
+                tabelaMov.addCell(mov[3]); // Data Formatada
+            }
+            documento.add(tabelaMov);
+            
+            // --- FIM ---
+            JOptionPane.showMessageDialog(this, "Relatório completo gerado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            
+            try {
+                Desktop.getDesktop().open(new File(nomeArquivo));
+            } catch (IOException e) {
+                 JOptionPane.showMessageDialog(this, "PDF salvo, mas não abriu automaticamente.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
+            
         } catch (DocumentException | FileNotFoundException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao gerar o PDF: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao gerar PDF: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } finally {
-            if (documento.isOpen()) { documento.close(); }
+            if (documento.isOpen()) {
+                documento.close();
+            }
         }
+   
     }//GEN-LAST:event_btnGerarPDFActionPerformed
+
+    private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscaActionPerformed
 
     public void preencherTabela() {
         DefaultTableModel modelo = (DefaultTableModel) jTable2.getModel();
@@ -299,7 +371,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         List<Produto> produtos = produtoDAO.listar();
         for (Produto p : produtos) {
             modelo.addRow(new Object[]{
-                p.getId(), p.getNome(), p.getDescricao(), p.getQuantidade(), p.getPreco()
+                p.getId(), p.getNome(), p.getDescricao(), p.getQuantidade(), p.getPreco(),p.getFornecedor()
             });
         }
     }
