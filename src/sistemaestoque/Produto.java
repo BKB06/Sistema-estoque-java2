@@ -9,17 +9,15 @@ import java.math.BigDecimal;
  * @author bruno
  */
 public class Produto {
-    // Atributos que representam as colunas da tabela "produtos"
+    
     private int id;
     private String nome;
     private String descricao;
     private int quantidade;
-    private BigDecimal preco; // Usamos BigDecimal para precisão monetária
+    private BigDecimal preco; // precisão monetária
     private String fornecedor;
     
-    // --- Getters e Setters ---
-    // Métodos para obter (get) e definir (set) os valores dos atributos.
-    
+   
     public int getId() {
         return id;
     }

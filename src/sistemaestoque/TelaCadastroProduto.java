@@ -21,17 +21,17 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
     public TelaCadastroProduto(java.awt.Frame parent, boolean modal, Produto produto) {
         super(parent, modal);
         initComponents();
-        setLocationRelativeTo(null); // Centraliza esta janela
+        setLocationRelativeTo(null); 
 
         this.produtoDAO = new ProdutoDAO();
         this.produtoParaEditar = produto;
 
-        // Se um produto foi passado, entramos no modo de edição
+        
         if (produtoParaEditar != null) {
             setTitle("Editar Produto");
-            preencherCampos(); // Chama o método para preencher o formulário
+            preencherCampos(); 
         } else {
-            // Se nenhum produto foi passado, entramos no modo de adição
+           
             setTitle("Adicionar Novo Produto");
         }
     }
@@ -40,7 +40,7 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
      * Preenche os campos de texto com os dados do produto que está sendo editado.
      */
     private void preencherCampos() {
-        // Busca o produto completo no banco para ter todos os dados
+        
         for (Produto p : produtoDAO.listar()) {
             if (p.getId() == produtoParaEditar.getId()) {
                 produtoParaEditar = p; // Pega o objeto produto completo
@@ -168,7 +168,7 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // Validação básica
+      
     if (txtNome.getText().isEmpty() || txtPreco.getText().isEmpty()) {
         JOptionPane.showMessageDialog(this, "Preencha os campos obrigatórios.");
         return;
@@ -183,25 +183,24 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
         produto.setDescricao(txtDescricao.getText());
         produto.setQuantidade(novaQuantidade);
         produto.setPreco(preco);
-        produto.setFornecedor(txtFornecedor.getText()); // <--- Pega do novo campo
+        produto.setFornecedor(txtFornecedor.getText()); 
 
         if (produtoParaEditar == null) {
-            // --- MODO INSERIR ---
-            produtoDAO.inserir(produto); // O DAO já registra a movimentação de entrada
+           
+            produtoDAO.inserir(produto); 
             JOptionPane.showMessageDialog(this, "Produto cadastrado!");
         } else {
-            // --- MODO EDITAR ---
+        
             produto.setId(produtoParaEditar.getId());
             
-            // Lógica Inteligente de Movimentação
             int qtdAntiga = produtoParaEditar.getQuantidade();
             int diferenca = novaQuantidade - qtdAntiga;
 
             if (diferenca > 0) {
-                // Se a quantidade aumentou, é ENTRADA
+                
                 new MovimentacaoDAO().registrarMovimentacao(produto.getId(), "ENTRADA", diferenca);
             } else if (diferenca < 0) {
-                // Se a quantidade diminuiu, é SAÍDA (multiplica por -1 para salvar positivo)
+                
                 new MovimentacaoDAO().registrarMovimentacao(produto.getId(), "SAIDA", diferenca * -1);
             }
             
@@ -216,14 +215,14 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void txtFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFornecedorActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_txtFornecedorActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-       /* Set the Nimbus look and feel */
+      
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -238,7 +237,7 @@ public class TelaCadastroProduto extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                // Chama o construtor correto, passando null para o produto (modo de adição)
+                
                 TelaCadastroProduto dialog = new TelaCadastroProduto(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override

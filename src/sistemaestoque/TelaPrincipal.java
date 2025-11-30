@@ -3,12 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package sistemaestoque;
-// Importações de funcionalidade
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-// Importações para o PDF (iText)
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -19,8 +18,6 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
-// Importações para abrir o arquivo PDF
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,10 +37,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public TelaPrincipal() {
         initComponents();
 
-    // Adicione estas 3 linhas:
-    setLocationRelativeTo(null); // Centraliza a janela
-    this.produtoDAO = new ProdutoDAO(); // Inicializa o DAO
-    preencherTabela(); // Carrega os dados do banco na tabela
+    
+    setLocationRelativeTo(null); 
+    this.produtoDAO = new ProdutoDAO();
+    preencherTabela(); 
     }
 
     /**
@@ -161,24 +158,24 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jBadd)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBeditar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBexcluir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBSair)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(btnGerarPDF)
-                                .addComponent(btnMostrarTodos)))
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                        .addComponent(btnBuscar)))
+                        .addComponent(btnBuscar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jBadd)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jBeditar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jBexcluir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jBSair))
+                            .addComponent(btnMostrarTodos)
+                            .addComponent(btnGerarPDF))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -186,11 +183,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jBadd)
-                    .addComponent(jBeditar)
+                    .addComponent(jBeditar, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jBexcluir)
-                    .addComponent(jBSair))
+                    .addComponent(jBSair, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -267,39 +264,26 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void btnGerarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarPDFActionPerformed
        String nomeArquivo = "relatorio_estoque_completo.pdf";
         Document documento = new Document(PageSize.A4);
-        
         try {
-            PdfWriter.getInstance(documento, new FileOutputStream(nomeArquivo));
+            PdfWriter.getInstance(documento, new FileOutputStream(nomeArquivo)); 
             documento.open();
-            
-            // --- PARTE 1: TÍTULO GERAL ---
             Font fonteTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
             Font fonteSubtitulo = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
             Font fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
-            
             Paragraph titulo = new Paragraph("Relatório Geral de Estoque", fonteTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
             documento.add(titulo);
-            documento.add(new Paragraph(" ")); // Espaço em branco
-            
-            // ==========================================
-            // --- PARTE 2: TABELA DE PRODUTOS ATUAIS ---
-            // ==========================================
+            documento.add(new Paragraph(" "));
             documento.add(new Paragraph("Posição Atual do Estoque", fonteSubtitulo));
-            documento.add(new Paragraph(" ")); // Espaço
-            
-            PdfPTable tabelaProdutos = new PdfPTable(6); // 6 Colunas
+            documento.add(new Paragraph(" "));
+            PdfPTable tabelaProdutos = new PdfPTable(6);
             tabelaProdutos.setWidthPercentage(100);
-            
-            // Cabeçalho Produtos
             tabelaProdutos.addCell(new PdfPCell(new Phrase("ID", fonteCabecalho)));
             tabelaProdutos.addCell(new PdfPCell(new Phrase("Nome", fonteCabecalho)));
             tabelaProdutos.addCell(new PdfPCell(new Phrase("Descrição", fonteCabecalho)));
             tabelaProdutos.addCell(new PdfPCell(new Phrase("Qtd", fonteCabecalho)));
             tabelaProdutos.addCell(new PdfPCell(new Phrase("Preço", fonteCabecalho)));
             tabelaProdutos.addCell(new PdfPCell(new Phrase("Fornecedor", fonteCabecalho)));
-            
-            // Dados Produtos
             List<Produto> listaProdutos = produtoDAO.listar();
             for (Produto p : listaProdutos) {
                 tabelaProdutos.addCell(String.valueOf(p.getId()));
@@ -310,47 +294,31 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 tabelaProdutos.addCell(p.getFornecedor() != null ? p.getFornecedor() : "");
             }
             documento.add(tabelaProdutos);
-            
-            // Espaço grande entre as tabelas
             documento.add(new Paragraph(" ")); 
             documento.add(new Paragraph(" ")); 
-            
-            // ==========================================
-            // --- PARTE 3: TABELA DE MOVIMENTAÇÕES ---
-            // ==========================================
             documento.add(new Paragraph("Histórico de Entradas e Saídas", fonteSubtitulo));
-            documento.add(new Paragraph(" ")); // Espaço
-            
-            PdfPTable tabelaMov = new PdfPTable(4); // 4 Colunas (Produto, Tipo, Qtd, Data)
+            documento.add(new Paragraph(" ")); 
+            PdfPTable tabelaMov = new PdfPTable(4); 
             tabelaMov.setWidthPercentage(100);
-            
-            // Cabeçalho Movimentações
             tabelaMov.addCell(new PdfPCell(new Phrase("Produto", fonteCabecalho)));
             tabelaMov.addCell(new PdfPCell(new Phrase("Tipo", fonteCabecalho)));
             tabelaMov.addCell(new PdfPCell(new Phrase("Qtd", fonteCabecalho)));
             tabelaMov.addCell(new PdfPCell(new Phrase("Data/Hora", fonteCabecalho)));
-            
-            // Dados Movimentações (Buscando do novo DAO)
             MovimentacaoDAO movDAO = new MovimentacaoDAO();
             List<String[]> listaMov = movDAO.listarParaRelatorio();
-            
             for (String[] mov : listaMov) {
-                tabelaMov.addCell(mov[0]); // Nome do Produto
-                tabelaMov.addCell(mov[1]); // Tipo (ENTRADA/SAIDA)
-                tabelaMov.addCell(mov[2]); // Quantidade
-                tabelaMov.addCell(mov[3]); // Data Formatada
+                tabelaMov.addCell(mov[0]);
+                tabelaMov.addCell(mov[1]);
+                tabelaMov.addCell(mov[2]); 
+                tabelaMov.addCell(mov[3]); 
             }
             documento.add(tabelaMov);
-            
-            // --- FIM ---
             JOptionPane.showMessageDialog(this, "Relatório completo gerado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            
             try {
                 Desktop.getDesktop().open(new File(nomeArquivo));
             } catch (IOException e) {
                  JOptionPane.showMessageDialog(this, "PDF salvo, mas não abriu automaticamente.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-            
+            } 
         } catch (DocumentException | FileNotFoundException e) {
             JOptionPane.showMessageDialog(this, "Erro ao gerar PDF: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } finally {
@@ -358,11 +326,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 documento.close();
             }
         }
-   
     }//GEN-LAST:event_btnGerarPDFActionPerformed
 
     private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_txtBuscaActionPerformed
 
     public void preencherTabela() {
