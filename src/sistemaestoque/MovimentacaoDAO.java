@@ -27,8 +27,6 @@ public class MovimentacaoDAO {
             JOptionPane.showMessageDialog(null, "Erro ao registrar movimentação: " + e.getMessage());
         }
     }
-
-    
     public List<String[]> listarParaRelatorio() {
         List<String[]> historico = new ArrayList<>();
         

@@ -14,7 +14,7 @@ public class Produto {
     private String nome;
     private String descricao;
     private int quantidade;
-    private BigDecimal preco; // precisão monetária
+    private BigDecimal preco; // precisão 
     private String fornecedor;
     
    
